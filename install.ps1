@@ -112,7 +112,7 @@ foreach ($program in $programy) {
 Write-Log "Instaluje: OpenVPN (Chocolatey)"
 # Parametry instalatora (MSI) przekazane do Chocolatey
 $openVpnArgs = "ADDLOCAL=OpenVPN.Service,Drivers,Drivers.Wintun,Drivers.TAPWindows6"
-$result = choco install openvpn --version 2.5.0 -y --install-arguments "'$openVpnArgs'" 2>&1
+$result = choco install openvpn --version 2.5.6 -y --install-arguments "'$openVpnArgs'" 2>&1
 
 if ($LASTEXITCODE -eq 0) {
     Write-Log "OK: OpenVPN"
