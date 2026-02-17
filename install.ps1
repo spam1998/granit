@@ -88,8 +88,7 @@ $programy = @(
     "brave",
     "7zip",
     "adobereader",
-    "anydesk",
-    "eset.nod32antivirus"
+    "anydesk"
 )
 
 $sukces = 0
@@ -106,6 +105,18 @@ foreach ($program in $programy) {
         Write-Log "BLAD: $program - $result"
         $bledy++
     }
+}
+
+# Instalacja ESET NOD32 Antivirus przez winget (zastępuje brakujący pakiet w Chocolatey)
+Write-Log "Instaluje: ESET NOD32 Antivirus (winget)"
+$esetWingetArgs = "install --id ESET.NOD32Antivirus -e --silent --accept-package-agreements --accept-source-agreements"
+Start-Process -FilePath "winget" -ArgumentList $esetWingetArgs -Wait -NoNewWindow
+if ($LASTEXITCODE -eq 0) {
+    Write-Log "OK: ESET NOD32 Antivirus"
+    $sukces++
+} else {
+    Write-Log "BLAD: ESET NOD32 Antivirus (kod wyjscia: $LASTEXITCODE)"
+    $bledy++
 }
 
 # Instalacja OpenVPN przez Chocolatey z parametrami (zastepuje winget)
