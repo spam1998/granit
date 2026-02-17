@@ -66,6 +66,23 @@ if (-NOT ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdenti
     exit 1
 }
 
+# Usuwanie niechcianych programów (np. McAfee)
+$niechcianeProgramy = @("*McAfee*") # Dodaj tutaj inne wzorce nazw
+foreach ($wzorzec in $niechcianeProgramy) {
+    Write-Log "Szukam programow pasujacych do wzorca: $wzorzec"
+    Get-Package -ErrorAction SilentlyContinue | Where-Object {$_.Name -like $wzorzec} | ForEach-Object {
+        $nazwa = $_.Name
+        Write-Log "Usuwam: $nazwa"
+        try {
+            Uninstall-Package -Name $nazwa -Force -ErrorAction Stop
+            Write-Log "USUNIETO: $nazwa"
+        } catch {
+            Write-Log "BLAD USWANIA: $nazwa - $_"
+        }
+    }
+}
+
+
 # Zainstaluj Chocolatey jeśli nie ma
 if (!(Get-Command choco -ErrorAction SilentlyContinue)) {
     Write-Log "Instaluje Chocolatey..."
