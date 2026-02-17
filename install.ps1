@@ -1,10 +1,63 @@
 # install-advanced.ps1
 $logFile = "instalacja-$(Get-Date -Format 'yyyyMMdd-HHmmss').log"
+# Zmienna z linkiem do instalatora ZWCAD (Wklej tutaj link bezpośredni z SharePointa)
+# Uwaga: Linki SharePoint często wymagają dodania "?download=1" na końcu, aby pobieranie ruszyło automatycznie.
+$zwcadInstallerUrl = "" 
 
 function Write-Log {
     param($Message)
     $timestamp = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
     "$timestamp - $Message" | Tee-Object -FilePath $logFile -Append
+}
+
+# ... (rest of the file remains similar until the end) ...
+
+# Instalacja OpenVPN przez winget (jak zazadano)
+Write-Log "Instaluje: OpenVPN (winget)"
+$wingetArgs = "install -e --custom ADDLOCAL=OpenVPN.Service,Drivers,Drivers.Wintun,Drivers.TAPWindows6 --id OpenVPNTechnologies.OpenVPN -v 2.5.040"
+Start-Process -FilePath "winget" -ArgumentList $wingetArgs -Wait -NoNewWindow
+if ($LASTEXITCODE -eq 0) {
+    Write-Log "OK: OpenVPN"
+    $sukces++
+} else {
+    Write-Log "BLAD: OpenVPN (kod wyjscia: $LASTEXITCODE)"
+    $bledy++
+}
+
+# Instalacja ZWCAD (jeśli podano link)
+if (-not [string]::IsNullOrWhiteSpace($zwcadInstallerUrl)) {
+    Write-Log "Pobieram instalator ZWCAD z podanego linku..."
+    $installerPath = "$env:TEMP\zwcad_installer.exe"
+    
+    try {
+        Invoke-WebRequest -Uri $zwcadInstallerUrl -OutFile $installerPath -ErrorAction Stop
+        Write-Log "Pobrano instalator. Rozpoczynam instalację..."
+        
+        # Argumenty cichej instalacji mogą się różnić w zależności od wersji ZWCAD.
+        # Typowe dla InstallShield: /S /v"/qn"
+        # Typowe dla Inno Setup: /VERYSILENT /SUPPRESSMSGBOXES
+        # Tutaj zakładamy standardowy tryb cichy, ale może wymagać dostosowania.
+        $installArgs = "/S" 
+        
+        Start-Process -FilePath $installerPath -ArgumentList $installArgs -Wait -NoNewWindow
+        
+        if ($LASTEXITCODE -eq 0) {
+            Write-Log "OK: ZWCAD"
+            $sukces++
+        } else {
+            Write-Log "BLAD: ZWCAD (kod wyjscia: $LASTEXITCODE)"
+            $bledy++
+        }
+    } catch {
+        Write-Log "BLAD: Nie udalo sie pobrac lub zainstalowac ZWCAD. Szczegoly: $_"
+        $bledy++
+    } finally {
+        if (Test-Path $installerPath) {
+            Remove-Item $installerPath -Force
+        }
+    }
+} else {
+    Write-Log "ZWCAD pominiety (brak linku w zmiennej `$zwcadInstallerUrl`)"
 }
 
 # Sprawdź uprawnienia administratora
