@@ -107,16 +107,34 @@ foreach ($program in $programy) {
     }
 }
 
-# Instalacja ESET NOD32 Antivirus przez winget (zastępuje brakujący pakiet w Chocolatey)
-Write-Log "Instaluje: ESET NOD32 Antivirus (winget)"
-$esetWingetArgs = "install --id ESET.NOD32Antivirus -e --silent --accept-package-agreements --accept-source-agreements"
-Start-Process -FilePath "winget" -ArgumentList $esetWingetArgs -Wait -NoNewWindow
-if ($LASTEXITCODE -eq 0) {
-    Write-Log "OK: ESET NOD32 Antivirus"
-    $sukces++
-} else {
-    Write-Log "BLAD: ESET NOD32 Antivirus (kod wyjscia: $LASTEXITCODE)"
+# Instalacja ESET NOD32 Antivirus (Live Installer) - bezposrednie pobieranie
+Write-Log "Pobieram: ESET NOD32 Antivirus (Live Installer)"
+$esetUrl = "https://download.eset.com/com/eset/apps/home/eav/windows/latest/eset_nod32_antivirus_live_installer.exe"
+$esetInstaller = "$env:TEMP\eset_nod32_live_installer.exe"
+
+try {
+    Invoke-WebRequest -Uri $esetUrl -OutFile $esetInstaller -ErrorAction Stop
+    Write-Log "Pobrano instalator ESET. Rozpoczynam cicha instalacje..."
+    
+    # Argumenty cichej instalacji dla Live Installer
+    $esetArgs = "--silent --accepteula"
+    
+    Start-Process -FilePath $esetInstaller -ArgumentList $esetArgs -Wait -NoNewWindow
+    
+    if ($LASTEXITCODE -eq 0) {
+        Write-Log "OK: ESET NOD32 Antivirus"
+        $sukces++
+    } else {
+        Write-Log "BLAD: ESET NOD32 Antivirus (kod wyjscia: $LASTEXITCODE)"
+        $bledy++
+    }
+} catch {
+    Write-Log "BLAD: Nie udalo sie pobrac lub zainstalowac ESET. Szczegoly: $_"
     $bledy++
+} finally {
+    if (Test-Path $esetInstaller) {
+        Remove-Item $esetInstaller -Force
+    }
 }
 
 # Instalacja OpenVPN przez Chocolatey z parametrami (zastepuje winget)
