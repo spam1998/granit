@@ -12,17 +12,7 @@ function Write-Log {
 
 # ... (rest of the file remains similar until the end) ...
 
-# Instalacja OpenVPN przez winget (jak zazadano)
-Write-Log "Instaluje: OpenVPN (winget)"
-$wingetArgs = "install -e --custom ADDLOCAL=OpenVPN.Service,Drivers,Drivers.Wintun,Drivers.TAPWindows6 --id OpenVPNTechnologies.OpenVPN -v 2.5.040"
-Start-Process -FilePath "winget" -ArgumentList $wingetArgs -Wait -NoNewWindow
-if ($LASTEXITCODE -eq 0) {
-    Write-Log "OK: OpenVPN"
-    $sukces++
-} else {
-    Write-Log "BLAD: OpenVPN (kod wyjscia: $LASTEXITCODE)"
-    $bledy++
-}
+
 
 # Instalacja ZWCAD (jeśli podano link)
 if (-not [string]::IsNullOrWhiteSpace($zwcadInstallerUrl)) {
