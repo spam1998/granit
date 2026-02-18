@@ -20,7 +20,7 @@ if (-not [string]::IsNullOrWhiteSpace($zwcadInstallerUrl)) {
     $installerPath = "$env:TEMP\zwcad_installer.exe"
     
     try {
-        Invoke-WebRequest -Uri $zwcadInstallerUrl -OutFile $installerPath -ErrorAction Stop
+        #Invoke-WebRequest -Uri $zwcadInstallerUrl -OutFile $installerPath -ErrorAction Stop
         Write-Log "Pobrano instalator. Rozpoczynam instalację..."
         
         # Argumenty cichej instalacji mogą się różnić w zależności od wersji ZWCAD.
