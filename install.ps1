@@ -2,7 +2,7 @@
 $logFile = "instalacja-$(Get-Date -Format 'yyyyMMdd-HHmmss').log"
 # Zmienna z linkiem do instalatora ZWCAD (Wklej tutaj link bezpośredni z SharePointa)
 # Uwaga: Linki SharePoint często wymagają dodania "?download=1" na końcu, aby pobieranie ruszyło automatycznie.
-$zwcadInstallerUrl = "https://pbgranitspzoo.sharepoint.com/sites/ExternPublic/_layouts/15/download.aspx?SourceUrl=%2Fsites%2FExternPublic%2FShared%20Documents%2FIT%20resources%2FZWCAD%5F2025%5F2%2E1%5FPL%5F20250911%2Eexe" 
+$zwcadInstallerUrl = "https://pbgranitspzoo.sharepoint.com/sites/ExternPublic/_layouts/15/download.aspx?SourceUrl=%2Fsites%2FExternPublic%2FShared%20Documents%2FIT%20resources%2FZWCAD%5F2025%5F2%2E1%5FPL%5F20250911%2Eexe?download=1" 
 
 function Write-Log {
     param($Message)
