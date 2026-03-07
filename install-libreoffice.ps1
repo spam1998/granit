@@ -1,5 +1,5 @@
-# install.ps1
-$logFile = "instalacja-$(Get-Date -Format 'yyyyMMdd-HHmmss').log"
+# install-libreoffice.ps1
+$logFile = "instalacja-office-$(Get-Date -Format 'yyyyMMdd-HHmmss').log"
 
 # Zmienna z linkiem do instalatora ZWCAD (Wklej tutaj link bezpośredni z SharePointa)
 # Uwaga: Linki SharePoint często wymagają dodania "?download=1" na końcu, aby pobieranie ruszyło automatycznie.
@@ -20,7 +20,7 @@ if (-NOT ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdenti
     exit 1
 }
 
-Write-Log "Rozpoczynam instalacje oprogramowania Granit..."
+Write-Log "Rozpoczynam instalacje oprogramowania Granit (Wersja z LibreOffice)..."
 
 # 2. Usuwanie niechcianych programów (np. McAfee)
 $niechcianeProgramy = @("*McAfee*") # Dodaj tutaj inne wzorce nazw
@@ -54,7 +54,8 @@ $programy = @(
     "brave",
     "7zip",
     "adobereader",
-    "anydesk"
+    "anydesk",
+    "libreoffice-still"
 )
 
 foreach ($program in $programy) {
