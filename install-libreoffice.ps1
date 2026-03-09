@@ -144,6 +144,24 @@ if ($LASTEXITCODE -eq 0) {
     $bledy++
 }
 
+# 8. Konfiguracja Windows Update w rejestrze
+Write-Log "Konfiguruje ustawienia Windows Update w rejestrze..."
+$registryPath = "HKLM:\SOFTWARE\Microsoft\WindowsUpdate\UX\Settings"
+
+try {
+    if (-not (Test-Path $registryPath)) {
+        New-Item -Path $registryPath -Force | Out-Null
+    }
+    
+    Set-ItemProperty -Path $registryPath -Name "AllowMUUpdateService" -Value 0 -Type DWord -Force
+    Set-ItemProperty -Path $registryPath -Name "IsExpedited" -Value 1 -Type DWord -Force
+    Set-ItemProperty -Path $registryPath -Name "RestartNotificationsAllowed2" -Value 1 -Type DWord -Force
+    
+    Write-Log "OK: Konfiguracja Windows Update zakonczona pomyslnie."
+} catch {
+    Write-Log "BLAD: Nie udalo sie skonfigurowac rejestru dla Windows Update. Szczegoly: $_"
+}
+
 Write-Log "===================="
 Write-Log "Zainstalowano: $sukces"
 Write-Log "Bledy: $bledy"
