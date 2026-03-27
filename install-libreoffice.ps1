@@ -43,7 +43,10 @@ if (!(Get-Command choco -ErrorAction SilentlyContinue)) {
     Write-Log "Instaluje Chocolatey..."
     Set-ExecutionPolicy Bypass -Scope Process -Force
     [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072
-    iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
+    $chocoInstallScript = "$env:TEMP\install_choco.ps1"
+    (New-Object System.Net.WebClient).DownloadFile('https://community.chocolatey.org/install.ps1', $chocoInstallScript)
+    & $chocoInstallScript
+    Remove-Item $chocoInstallScript -Force -ErrorAction SilentlyContinue
     $env:Path += ";C:\ProgramData\chocolatey\bin"
 }
 
@@ -60,13 +63,13 @@ $programy = @(
 
 foreach ($program in $programy) {
     Write-Log "Instaluje: $program"
-    $result = choco install $program -y 2>&1
+    $cmdOutput = choco install $program -y 2>&1
     
     if ($LASTEXITCODE -eq 0) {
         Write-Log "OK: $program"
         $sukces++
     } else {
-        Write-Log "BLAD: $program - $result"
+        Write-Log "BLAD: $program - $cmdOutput"
         $bledy++
     }
 }
@@ -134,13 +137,13 @@ try {
 # 7. Instalacja OpenVPN przez Chocolatey
 Write-Log "Instaluje: OpenVPN (Chocolatey)"
 $openVpnArgs = "ADDLOCAL=OpenVPN.Service,Drivers,Drivers.Wintun,Drivers.TAPWindows6"
-$result = choco install openvpn --version 2.5.6 -y --install-arguments "'$openVpnArgs'" 2>&1
+$cmdOutput = choco install openvpn --version 2.5.6 -y --install-arguments "'$openVpnArgs'" 2>&1
 
 if ($LASTEXITCODE -eq 0) {
     Write-Log "OK: OpenVPN"
     $sukces++
 } else {
-    Write-Log "BLAD: OpenVPN - $result"
+    Write-Log "BLAD: OpenVPN - $cmdOutput"
     $bledy++
 }
 
