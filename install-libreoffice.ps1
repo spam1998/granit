@@ -63,7 +63,7 @@ $programy = @(
 
 foreach ($program in $programy) {
     Write-Log "Instaluje: $program"
-    $cmdOutput = choco install $program -y 2>&1
+    $cmdOutput = & "$env:ProgramData\chocolatey\bin\choco.exe" install $program -y 2>&1
     
     if ($LASTEXITCODE -eq 0) {
         Write-Log "OK: $program"
@@ -137,7 +137,7 @@ try {
 # 7. Instalacja OpenVPN przez Chocolatey
 Write-Log "Instaluje: OpenVPN (Chocolatey)"
 $openVpnArgs = "ADDLOCAL=OpenVPN.Service,Drivers,Drivers.Wintun,Drivers.TAPWindows6"
-$cmdOutput = choco install openvpn --version 2.5.6 -y --install-arguments "'$openVpnArgs'" 2>&1
+$cmdOutput = & "$env:ProgramData\chocolatey\bin\choco.exe" install openvpn --version 2.5.6 -y --install-arguments "'$openVpnArgs'" 2>&1
 
 if ($LASTEXITCODE -eq 0) {
     Write-Log "OK: OpenVPN"
