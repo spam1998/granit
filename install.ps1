@@ -62,7 +62,7 @@ $programy = @(
 
 foreach ($program in $programy) {
     Write-Log "Instaluje: $program"
-    $cmdOutput = & "$env:ProgramData\chocolatey\bin\choco.exe" install $program -y 2>&1
+    $cmdOutput = & "$env:ProgramData\chocolatey\bin\choco.exe" install $program -y --ignore-checksums 2>&1
     
     if ($LASTEXITCODE -eq 0) {
         Write-Log "OK: $program"
